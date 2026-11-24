@@ -1,0 +1,26 @@
+.cast-page { max-width: 760px; container: cast / inline-size; }
+.cast-page > header { display: grid; grid-template-columns: auto minmax(0,1fr) minmax(0,32%); gap: 12px; align-items: center; padding: 4px 0 8px; }
+.cast-page > header:not(:has(.tv-search-field:not([hidden]))) { grid-template-columns: auto minmax(0,1fr); }
+.cast-portrait { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: var(--surface); }
+.cast-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cast-page h1 { font-size: 22px; overflow-wrap: anywhere; }
+.cast-page header p { margin-top: 6px; }
+.cast-page p, .cast-title small { color: var(--secondary); }
+.cast-page h2 { margin: 24px 0 8px; font-size: 18px; }
+.cast-page ul { list-style: none; margin: 0; padding: 0; }
+.cast-page li:not([hidden]) ~ li:not([hidden]) { border-top: 1px solid var(--line); }
+.cast-row { display: grid; grid-template-columns: 44px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 10px 2px; color: inherit; text-decoration: none; }
+.cast-row:hover strong, .cast-row:focus-visible strong { text-decoration: underline; }
+.cast-title { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.cast-title small, .cast-watch { font-size: 13px; }
+.cast-watch { white-space: nowrap; color: var(--secondary); }
+.cast-watch:has(span) { color: var(--text); }
+.cast-watch span { margin-right: 4px; }
+.cast-page > div > p { margin: 20px 0 0; }
+@container cast (max-width: 28rem) {
+  .cast-page > header { gap: 8px; grid-template-columns: auto minmax(0,1fr) minmax(5.5rem,36%); }
+  .cast-portrait { width: 40px; height: 40px; }
+  .cast-page h1 { font-size: 19px; }
+  .cast-page header p { font-size: 13px; }
+  .cast-page .tv-search-field { padding-inline: 8px; }
+}

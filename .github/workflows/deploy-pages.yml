@@ -1,0 +1,95 @@
+name: Deploy csvTV to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: csvtv-pages-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out csvTV
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Test and package the app
+        working-directory: app
+        run: |
+          npm ci
+          CSVTV_BROWSER="$(command -v google-chrome)" npm test
+          node package-release.mjs
+          unzip -q release/csvTV.zip -d "$RUNNER_TEMP/csvtv-site"
+
+      - name: Install Cloudflare's deployment tool
+        run: npm install --prefix "$RUNNER_TEMP/csvtv-tools" --no-audit --no-fund wrangler@4.168.0
+
+      - name: Deploy to the configured Pages project
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          set -euo pipefail
+          : "${CLOUDFLARE_ACCOUNT_ID:?Add the CLOUDFLARE_ACCOUNT_ID repository secret}"
+          : "${CLOUDFLARE_API_TOKEN:?Add the CLOUDFLARE_API_TOKEN repository secret}"
+          : "${CLOUDFLARE_PAGES_PROJECT:?Add the CLOUDFLARE_PAGES_PROJECT repository secret}"
+          [[ "$CLOUDFLARE_ACCOUNT_ID" =~ ^[0-9a-fA-F]{32}$ && "$CLOUDFLARE_PAGES_PROJECT" =~ ^[a-z0-9-]+$ ]] || { echo 'Check the Pages project and account settings.'; exit 1; }
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$CLOUDFLARE_PAGES_PROJECT"
+          reply="$(mktemp "$RUNNER_TEMP/pages-project.XXXXXXXX")"
+          trap 'rm -f -- "$reply"' EXIT
+          read_project() {
+            local status
+            status="$(curl --silent --max-time 10 --retry 1 --retry-max-time 12 --output "$reply" --write-out '%{http_code}' \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api")" || { echo 'Could not reach the Cloudflare API. Retry the workflow.'; exit 1; }
+            case "$status" in
+              401|403) echo 'Cloudflare denied access. Check the token is active and has Pages Edit for the configured account.'; exit 1 ;;
+              429|5??) echo 'Cloudflare is temporarily unavailable or rate-limited. Retry the workflow later.'; exit 1 ;;
+            esac
+            if [[ "$status" == 404 ]] || jq -e 'any(.errors[]?; .code == 8000007)' "$reply" >/dev/null 2>&1; then
+              echo 'Pages project not found. Check the account ID and the Pages project name in the repository secrets.'
+              exit 1
+            fi
+            if [[ "$status" != 200 ]] || ! jq -e '.success == true and (.result | type == "object")' "$reply" >/dev/null 2>&1; then
+              echo 'Cloudflare returned an unexpected project response. Check the project in the dashboard.'
+              exit 1
+            fi
+          }
+          read_project
+          production_branch="$(jq -er '.result.production_branch | strings | select(length > 0)' "$reply" 2>/dev/null)" || { echo 'Cloudflare did not return a production branch. Check the Pages project settings.'; exit 1; }
+          # Wrangler prints deployment URLs on success and can include hostnames in errors.
+          if ! "$RUNNER_TEMP/csvtv-tools/node_modules/.bin/wrangler" pages deploy "$RUNNER_TEMP/csvtv-site" \
+            --project-name "$CLOUDFLARE_PAGES_PROJECT" --branch "$production_branch" --commit-hash "$GITHUB_SHA" >/dev/null 2>&1; then
+            echo 'Deployment failed. Check the deployment in your Cloudflare dashboard.'
+            exit 1
+          fi
+          for attempt in 1 2 3 4 5 6; do
+            if (( attempt > 1 )); then sleep 5; fi
+            read_project
+            if jq -e --arg sha "$GITHUB_SHA" '.result.canonical_deployment |
+              .environment == "production" and .deployment_trigger.metadata.commit_hash == $sha and
+              .latest_stage.name == "deploy" and .latest_stage.status == "success"' "$reply" >/dev/null 2>&1; then
+              echo 'Verified this commit is deployed to production.'
+              exit 0
+            fi
+          done
+          echo 'Upload succeeded, but Cloudflare has not confirmed this commit in production. Check the Pages deployment in the dashboard.'
+          exit 1

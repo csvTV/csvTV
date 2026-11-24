@@ -1,0 +1,56 @@
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import test from 'node:test';
+import {createRelease} from '../package-release.mjs';
+import {openChromium} from './offline-chromium.mjs';
+import {linkFixture,offlineProviders,renewFixture} from './offline-providers.mjs';
+import {listen,stop} from './offline-site.mjs';
+import {releaseServer,unpack} from './release-site.mjs';
+
+for(const page of ['library','lists'])test('Clear this device retires the previous '+page+' entry after a new account is linked', {timeout:60000},async t=>{
+  const {bytes}=await createRelease(new URL('../dist/',import.meta.url));
+  const files=await unpack(bytes);
+  files.set('outside.html',Buffer.from('<!doctype html><title>Another document</title>'));
+  const server=releaseServer(files),origin='http://127.0.0.1:'+await listen(server);
+  const profile=await mkdtemp(join(tmpdir(),'csvtv-erased-history-'));
+  let browser,cloud=offlineProviders(origin);
+  t.after(async()=>{try{await browser?.close();}finally{await stop(server);await rm(profile,{recursive:true,force:true,maxRetries:6,retryDelay:150});}});
+  const marker='Fictional Echo Observatory';
+  await cloud.settings({tmdb_key:'fictional-offline-key'});
+  await cloud.upload('lists.csv','list,show_id,show\r\nA first list,45,The Listening House\r\n'+marker+',45,The Listening House\r\n');
+  browser=await openChromium(profile,(event,send)=>cloud.respond(event,send));
+  await linkFixture(browser,origin,'/');
+  await browser.navigate(origin+'/#/settings');
+  await browser.waitFor('document.querySelector("[data-cloud-reason]")?.textContent==="Synced"');
+  await browser.click('a[href="#/'+page+'"]');
+  const search="document.querySelector('main input[type=search]')";
+  if(page==='library') {
+    await browser.waitFor(search);
+    await browser.evaluate(`const input=${search}; input.value=${JSON.stringify(marker)};input.dispatchEvent(new Event('input',{bubbles:true}));`);
+  } else await browser.click('[data-list-focus="chip/'+marker+'"]');
+  await browser.waitFor('typeof history.state?.csvtvVisit==="string"');
+  assert.ok(!JSON.stringify(await browser.evaluate('history.state')).includes(marker));
+  const history=await browser.send('Page.getNavigationHistory');
+  const entry=history.entries[history.currentIndex];
+  await browser.evaluate('addEventListener("pageshow",e=>{window.returnedFromCache=e.persisted;})');
+  await browser.navigate(origin+'/outside.html');
+  await browser.navigate(origin+'/#/settings');
+  await browser.click('[data-clear-device]:enabled');
+  await browser.click('dialog:modal .destructive');
+  await browser.waitFor('document.querySelector("#app").dataset.page==="dropbox-setup"');
+  cloud=offlineProviders(origin);
+  await cloud.settings({tmdb_key:'fictional-offline-key'});
+  await renewFixture(browser,'/',false,'fictional-new-owner');
+  await browser.waitFor('!!document.querySelector(".app-frame") && document.querySelector("#app").dataset.page!=="dropbox-setup"');
+  await browser.send('Page.navigateToHistoryEntry',{entryId:entry.id});
+  await browser.waitFor('location.hash==="#/'+page+'" && document.querySelector("#app")?.dataset.page==="'+page+'"');
+  if(page==='library'){
+    await browser.waitFor(search);
+    assert.equal(await browser.evaluate(search+'.value'),'');
+  }else await browser.waitFor('document.querySelector("main")?.textContent.includes("No custom lists yet")');
+  assert.ok(!JSON.stringify(await browser.evaluate('history.state')).includes(marker));
+  assert.ok(!(await browser.evaluate('document.querySelector("main").textContent')).includes(marker));
+  t.diagnostic('Browser restored previous document from memory: '+Boolean(await browser.evaluate('window.returnedFromCache')));
+});

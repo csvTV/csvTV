@@ -1,0 +1,11 @@
+#sample-guide {
+  padding: .75rem max(1rem, calc((100% - 70rem) / 2));
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+#sample-guide strong { display: block; }
+#sample-guide p { max-width: 50rem; color: var(--secondary); }
+#sample-guide a { text-underline-offset: .15em; }

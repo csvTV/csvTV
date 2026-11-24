@@ -1,0 +1,9 @@
+main { margin: 0 auto; padding: 1rem; }
+.test-guide { margin-block: 1rem 2rem; }
+.test-guide p, .test-guide ol, .test-guide details { margin-block: .75rem; }
+.test-guide ol, .test-guide ul { padding-left: 1.4rem; }
+.test-guide li { margin-block: .45rem; }
+.test-guide label { display: block; font-weight: 600; margin: 1rem 0 .4rem; }
+.test-guide input { max-width: 100%; }
+.test-guide [role=status] { white-space: pre-line; }
+.test-guide code { overflow-wrap: anywhere; }

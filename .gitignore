@@ -1,0 +1,41 @@
+# Personal records, source exports and backups
+data/
+backups/
+settings.csv
+watched.csv
+ratings.csv
+lists.csv
+shows.csv
+summary.csv
+settings (*).csv
+watched (*).csv
+ratings (*).csv
+lists (*).csv
+shows (*).csv
+summary (*).csv
+csvtv-reset.json
+trakt-export-*.zip
+gdpr_data*.json
+
+# Developer credentials and generated files
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.har
+storageState.json
+playwright/.auth/
+node_modules/
+/app/dist/
+/app/release/
+/app/coverage/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+desktop.ini

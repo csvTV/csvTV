@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Four-file share test · csvTV</title>
+  <link rel="stylesheet" href="./app/settings.css">
+  <link rel="stylesheet" href="./app/export.css">
+  <link rel="stylesheet" href="./fixture.css">
+  <script type="module" src="./fixture.js"></script>
+</head>
+<body>
+  <main>
+    <section class="test-guide">
+      <h1>iPhone share test</h1>
+      <p>Use Safari on a physical iPhone. This page opens csvTV’s Export screen with two fictional shows.</p>
+      <ol>
+        <li>Choose the four record files and tap Share once. Choose Save to Files and save all four into a new folder. Use the first file picker below to check what arrived.</li>
+        <li>Tap Share again and dismiss the sheet. Check that Export is still available and the app reports no delivery.</li>
+        <li>Try a share target that cannot receive the files. Record whether Safari omits the target, the target refuses, or there is no such target to try.</li>
+        <li>Download each of the four files with its own tap. Use a separate empty folder so iOS can keep the original names. Check the downloaded copies with the second picker.</li>
+      </ol>
+    </section>
+    <div id="export"><p role="status">Opening the fictional watch record…</p></div>
+    <section class="test-guide" aria-labelledby="check-title">
+      <h2 id="check-title">Verify the saved copies</h2>
+      <p>In each picker, select all four CSVs from its folder. The page checks the exact names and SHA-256 digests on the phone.</p>
+      <label for="shared">Files saved from the share sheet</label>
+      <input id="shared" type="file" multiple aria-describedby="shared-result">
+      <p id="shared-result" role="status">Awaiting shared files.</p>
+      <label for="downloaded">Files downloaded individually</label>
+      <input id="downloaded" type="file" multiple aria-describedby="downloaded-result">
+      <p id="downloaded-result" role="status">Awaiting downloads.</p>
+      <details><summary>Expected file sizes and SHA-256 digests</summary><ul id="manifest"></ul></details>
+      <p>Record the iPhone model, iOS version, share target, both file check results, and what happened on cancellation and with the unavailable target. Test build <code>@@BUILD@@</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

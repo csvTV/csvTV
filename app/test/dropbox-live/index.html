@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dropbox development test · csvTV</title>
+<script type="module" src="/probe.js"></script></head><body><main>
+<h1>Dropbox development test</h1>
+<p>Use the public key of a dedicated Dropbox App Folder app. Enable files.metadata.read, files.content.read and files.content.write, allow public clients and register <code>http://localhost:8765/</code> as its redirect address.</p>
+<p>The file test creates a folder named csvtv-probe followed by a random ID, checks a fictional file and removes the folder. Keep this tab open for two minutes for the expiry test.</p>
+<p>The revocation-only test requests a seven-day refresh token and checks it immediately before and after sign-out.</p>
+<label for="key">Public development app key</label> <input id="key" autocomplete="off" spellcheck="false">
+<button id="signin" disabled>Run file and expiry test</button>
+<button id="revoke-only" disabled>Run revocation only</button>
+<p id="status" role="status"></p><ul id="results"></ul>
+</main></body></html>

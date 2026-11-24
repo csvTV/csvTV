@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>iPhone offline test · csvTV</title>
+  <link rel="stylesheet" href="./fixture.css">
+  <script type="module" src="./fixture.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Open csvTV offline</h1>
+    <p>Use a regular Safari tab on your iPhone. This test puts a fictional episode of <strong>Signal Garden</strong> in the Library on this device.</p>
+    <ol>
+      <li>Tap the button below while online. In Settings, wait for <strong>Ready to open offline.</strong></li>
+      <li>Open <strong>Library</strong> and bookmark that page. Turn on Airplane Mode and turn off Wi-Fi.</li>
+      <li>Close the tracker tab. Open a new Safari tab and use the bookmark. Check that <strong>Signal Garden</strong> appears with one watched episode.</li>
+      <li>Open the show, change its rating, and return to Library. Close the tab and reopen the bookmark again. Check that the new rating is there, then reconnect.</li>
+    </ol>
+    <button type="button" id="prepare">Prepare sample and open csvTV</button>
+    <p id="result" role="status"></p>
+    <noscript>Turn on JavaScript to prepare the sample.</noscript>
+  </main>
+</body>
+</html>

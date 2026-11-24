@@ -1,0 +1,58 @@
+.personal-sheet { overflow-wrap: anywhere; }
+.personal-sheet h2 { margin: 0 0 14px; font-size: 22px; }
+.personal-sheet label > :is(input[type=text], input[type=search], textarea) { display: block; margin-top: 6px; }
+.personal-show-name { color: var(--secondary); margin: 0 0 4px; font-size: 12px; font-weight: 600; }
+.personal-check-row { cursor: pointer; }
+.personal-sheet label.personal-check-row {
+  display: flex; align-items: center; gap: 12px; margin: 0; padding: 10px 2px; min-height: 48px;
+  font-size: 15px; font-weight: 500; border-bottom: 1px solid var(--line);
+}
+.personal-check-row span { min-width: 0; overflow-wrap: anywhere; }
+.personal-sheet input.personal-check, .recovery-screen input[type=checkbox] {
+  appearance: none; flex: 0 0 20px; width: 20px; height: 20px; min-height: 20px;
+  padding: 0; margin: 0; background: transparent; border: 2px solid var(--muted); border-radius: 6px;
+  display: inline-grid; place-items: center; cursor: pointer;
+}
+.personal-sheet input.personal-check:checked, .recovery-screen input[type=checkbox]:checked { background: var(--text); border-color: var(--text); }
+.personal-sheet input.personal-check:checked::after, .recovery-screen input[type=checkbox]:checked::after {
+  content: ""; width: 8px; height: 4px; border-left: 2px solid var(--main-ink); border-bottom: 2px solid var(--main-ink);
+  transform: translateY(-1px) rotate(-45deg);
+}
+.export-screen input[type=radio] {
+  appearance: none; box-sizing: border-box; flex: none; width: 20px; height: 20px; min-height: 0;
+  margin: 0; padding: 0; border: 2px solid var(--muted); border-radius: 50%; background: transparent; cursor: pointer;
+}
+.export-screen input[type=radio]:checked {
+  border: 6px solid var(--text);
+}
+@media (forced-colors: active) {
+  .personal-sheet input.personal-check, .recovery-screen input[type=checkbox],
+  .export-screen input[type=radio] { appearance: auto; }
+  .personal-sheet input.personal-check::after, .recovery-screen input[type=checkbox]::after { display: none; }
+}
+.rating-figure { margin: 0; font-size: 26px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.rating-figure small { font-size: 15px; color: var(--secondary); }
+.rating-slider { position: relative; height: 44px; margin-top: 12px; display: flex; align-items: center; }
+.rating-slider progress {
+  position: absolute; inset-inline: 12px; width: calc(100% - 24px); height: 4px; border: 0; border-radius: 2px;
+  overflow: hidden; appearance: none; background: var(--muted); color: var(--text);
+}
+.rating-slider progress::-webkit-progress-bar { background: var(--muted); }
+.rating-slider progress::-webkit-progress-value { background: var(--text); }
+.rating-slider progress::-moz-progress-bar { background: var(--text); }
+.personal-sheet .rating-slider input[type=range] {
+  appearance: none; z-index: 1; width: 100%; height: 44px; min-height: 44px;
+  border: 0; padding: 0; margin: 0; border-radius: 3px; background: transparent; cursor: pointer;
+}
+.rating-slider input::-webkit-slider-runnable-track { background: transparent; height: 24px; }
+.rating-slider input::-moz-range-track { background: transparent; }
+.rating-slider input::-webkit-slider-thumb {
+  appearance: none; box-sizing: border-box; height: 24px; width: 24px;
+  border: 2px solid var(--card); border-radius: 100%; background: var(--text);
+}
+.rating-slider input::-moz-range-thumb {
+  box-sizing: border-box; height: 24px; width: 24px;
+  border: 2px solid var(--card); border-radius: 100%; background: var(--text);
+}
+.rating-scale { display: flex; justify-content: space-between; margin: 0; color: var(--secondary); font-size: 12px; }
+.rating-commands .destructive { background: transparent; }

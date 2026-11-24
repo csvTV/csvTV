@@ -1,0 +1,30 @@
+{
+  "name": "csvtv",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "test:dropbox-release-live": "node test/dropbox-release-live.mjs",
+    "test:dropbox-live": "npm run build && node test/dropbox-live.mjs",
+    "test:offline-webkit": "npm run build && node --test test/offline-webkit.mjs",
+    "check": "node node_modules/typescript/bin/tsc --noEmit",
+    "build": "node node_modules/typescript/bin/tsc && node build-assets.mjs",
+    "release": "npm run build && node package-release.mjs",
+    "start": "node serve.mjs",
+    "test:tmdb-live": "node test/tmdb-live.mjs",
+    "test:mdblist-live": "npm run build && node test/mdblist-live.mjs",
+    "test:omdb-live": "npm run build && node test/omdb-live.mjs",
+    "test:anilist-mapping-live": "npm run build && node test/anilist-mapping-live.mjs",
+    "pretest": "npm run build",
+    "test": "node --test --test-concurrency=3 \"test/*.test.mjs\""
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "@zip.js/zip.js": "2.25.0"
+  }
+}

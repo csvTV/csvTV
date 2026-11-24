@@ -1,0 +1,53 @@
+.lists-screen > .screen-heading { margin-bottom: 16px; }
+.list-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.list-chips button { min-height: 32px; max-width: 100%; gap: 7px; padding: 5px 12px; border-radius: 18px; background: var(--surface); font-size: 13px; overflow-wrap: anywhere; }
+.list-chips button span { color: var(--secondary); font-size: 12px; font-variant-numeric: tabular-nums; }
+.list-chips button[aria-pressed=true] { background: var(--text); color: var(--main-ink); }
+.list-chips button[aria-pressed=true] span { color: var(--main-ink); }
+.list-new::before { content: '+'; font-size: 16px; font-weight: 500; line-height: 1; }
+.lists-screen section { margin-top: 24px; }
+.lists-screen section > header { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-bottom: 10px; }
+.lists-screen section > header h2 { margin: 0; font-size: 18px; font-weight: 650; overflow-wrap: anywhere; }
+.list-tools { position: relative; flex: 1 1 22rem; min-width: 0; display: flex; align-items: center; gap: 4px; }
+.list-tools .view-sort { flex: none; margin-inline-start: auto; }
+.list-search { flex: 1 1 10rem; min-width: 0; max-width: 18rem; margin-inline-end: 8px; }
+.list-search .tv-search-field { container: list-input / inline-size; min-height: 38px; padding-inline: 10px; gap: 8px; }
+.list-search .tv-search-field input { height: 36px; padding: 4px 0; }
+@container list-input (width < 9rem) {
+  .list-search .search-glass { display: none; }
+}
+.list-search-menu { position: absolute; z-index: 5; inset: calc(100% + 4px) auto auto 0; width: min(100%,18rem); max-height: min(18rem,40vh); overflow-y: auto;
+  overscroll-behavior: contain; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%); }
+.list-search-menu ul { list-style: none; margin: 0; padding: 0; }
+.list-search-menu li { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding-inline-start: 6px; }
+.list-search-menu li > span { min-width: 0; overflow-wrap: anywhere; }
+.list-search-menu small, .list-search-menu p { color: var(--secondary); }
+.list-search-menu p { margin: 6px; font-size: 13px; }
+.list-search-menu button { flex: none; min-width: 44px; min-height: 32px; margin-block: 3px; padding: 4px 8px; font-size: 13px; }
+@media (pointer: coarse) {
+  .list-search-menu button, .list-search .tv-search-field input { min-height: 44px; }
+}
+@media (max-width: 600px) {
+  .list-search { max-width: none; margin-inline-end: 2px; }
+  .list-search-menu { width: 100%; }
+  .list-search .tv-search-field { padding-inline: 7px; }
+  .list-tools .view-sort { gap: 4px; }
+  .list-tools .view-sort select { field-sizing: content; padding-inline: 4px; }
+}
+.list-more, .list-remove { width: 44px; height: 44px; padding: 0; flex: none; color: var(--secondary); background: transparent; }
+.list-more { letter-spacing: 2px; }
+.list-remove { font-size: 23px; font-weight: 400; }
+.list-shows { list-style: none; padding: 0; margin: 0; }
+.list-shows > li { display: flex; gap: 10px; align-items: center; min-height: 72px; }
+.list-shows a { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 52px; text-decoration: none; }
+.list-shows a:is(:hover,:focus-visible) strong { text-decoration: underline; }
+.list-shows .tv-poster { width: 40px; flex: none; }
+.watch-compact .list-shows .tv-poster { display: none; }
+.watch-compact .list-shows > li, .watch-compact .list-shows a { min-height: 44px; }
+.list-shows a > span:last-child { min-width: 0; display: grid; gap: 3px; overflow-wrap: anywhere; }
+.list-shows strong { font-weight: 600; }
+.list-shows small, .list-empty { color: var(--secondary); }
+.list-rating { white-space: nowrap; font-weight: 600; font-size: 13px; }
+.list-rating small { font-weight: 400; }
+.list-empty { margin: 12px 0; }

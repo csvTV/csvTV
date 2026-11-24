@@ -1,0 +1,82 @@
+# Goes in the repository at .github/workflows/mal-ratings.yml
+# Each day: fetch the mapping file and MyAnimeList's ranking, join them (mal-build.mjs), publish the result as the only commit on the "mal-data" branch.
+# Needs the repository secret MAL_CLIENT_ID.
+name: MyAnimeList scores
+
+on:
+  schedule:
+    - cron: '47 6 * * *'   # every day at 06:47 UTC; off the hour, and half an hour after the IMDb job
+  workflow_dispatch:        # adds a "Run workflow" button, for a run on demand
+
+concurrency:
+  group: csvtv-publish-mal-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write           # lets the job push the result to this repository
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Each action is pinned to the commit its tag named on 2026-11-14, so a moved tag cannot change what runs here.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+        with:
+          persist-credentials: false  # git is not set up with the job token for the later steps
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Verify the repository is private
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          visibility=$(gh api "repos/$GITHUB_REPOSITORY" --jq .visibility)
+          [[ "$visibility" == private ]] || { echo "A private repository is required."; exit 1; }
+      - name: Fetch the scores and join them
+        env:
+          MAL_CLIENT_ID: ${{ secrets.MAL_CLIENT_ID }}
+        run: node mal-build.mjs mal-ratings.csv.gz
+      - name: Publish a newer snapshot to mal-data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir out
+          mv mal-ratings.csv.gz out/
+          cd out
+          git init -q -b mal-data
+          git config credential.helper '!gh auth git-credential'
+          remote="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          ref=refs/heads/mal-data
+          expected=
+          existing=$(git ls-remote --refs "$remote" "$ref")
+          if [[ -n "$existing" ]]; then
+            git fetch -q --depth=1 "$remote" "$ref"
+            expected=$(git rev-parse FETCH_HEAD)
+            subject=$(git log -1 --format=%s FETCH_HEAD)
+            # The raw commit retains its parent headers even in a depth-one fetch.
+            parents=$(git cat-file -p FETCH_HEAD | sed -n '/^$/,$d; /^parent /p')
+            files=$(git ls-tree --format='%(objectmode) %(objecttype) %(path)' FETCH_HEAD)
+            [[ -z "$parents" && "$subject" =~ ^MyAnimeList[[:space:]]scores[[:space:]][0-9]{4}-[0-9]{2}-[0-9]{2}$ && "$files" == '100644 blob mal-ratings.csv.gz' ]] || {
+              echo "Unrecognized output branch. Its contents have been preserved."
+              exit 1
+            }
+            previous=$(git log -1 --format='%(trailers:key=csvTV-Run,valueonly)' FETCH_HEAD)
+            if [[ -n "$previous" ]]; then
+              [[ "$previous" =~ ^[1-9][0-9]*$ ]] || { echo "Invalid snapshot generation."; exit 1; }
+              # The trailer belongs to the existing branch and may exceed shell integer precision.
+              if (( ${#previous} > ${#GITHUB_RUN_NUMBER} )) ||
+                 { (( ${#previous} == ${#GITHUB_RUN_NUMBER} )) && [[ "$previous" == "$GITHUB_RUN_NUMBER" || "$previous" > "$GITHUB_RUN_NUMBER" ]]; }; then
+                echo "An equal or newer run already published this snapshot."
+                exit 0
+              fi
+            fi
+          fi
+          git add mal-ratings.csv.gz
+          git -c user.name="mal-ratings-job" -c user.email="mal-ratings-job@users.noreply.github.com" \
+            commit -q -m "MyAnimeList scores $(date -u +%F)" -m "csvTV-Run: $GITHUB_RUN_NUMBER"
+          visibility=$(gh api "repos/$GITHUB_REPOSITORY" --jq .visibility)
+          [[ "$visibility" == private ]] || { echo "Publication requires a private repository."; exit 1; }
+          git push --force-with-lease="$ref:$expected" "$remote" "HEAD:$ref"

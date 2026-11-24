@@ -1,0 +1,121 @@
+.statistics-screen { --stats-tile-gap: 8px; min-width: 0; container-type: inline-size; font-variant-numeric: tabular-nums; }
+.statistics-screen > header { margin: 0 0 16px; }
+.statistics-screen .stats-scope { max-width: none; margin-top: 12px; }
+.stats-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--stats-tile-gap); margin: 0 0 var(--stats-tile-gap); }
+.stats-totals { display: contents; }
+.stats-totals > div, .statistics-card { min-width: 0; border-radius: 10px; background: var(--card); padding: 14px; }
+.stats-totals dt { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--secondary); }
+.stat-icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.stats-totals dd { margin: 8px 0 0; font-weight: 700; font-size: 26px; letter-spacing: -.025em; line-height: 1.12; overflow-wrap: anywhere; }
+.stats-omissions, .stats-empty { font-size: 13px; color: var(--secondary); margin: 12px 0; }
+.stats-omissions:empty, .stats-empty:empty { display: none; }
+.stats-charts, .stats-charts > div, .stats-rewatch-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--stats-tile-gap); }
+.stats-charts > div:not(:has(.statistics-card)), .stats-rewatch-stack:empty { display: none; }
+.stats-totals > div { padding: 12px; }
+.stats-rewatch-stack:has([data-chart=rewatched-shows]) { grid-template-rows: auto 1fr; }
+.stats-comparisons { grid-auto-rows: 1fr; }
+.stats-comparisons .statistics-card:has(.stats-dots) { display: flex; flex-direction: column; }
+.stats-comparisons .statistics-card > div:has(.stats-dots) { flex: 1; display: grid; }
+.stats-rewatch-stack > [data-chart=rewatches] header { margin-bottom: 4px; }
+.stats-rewatch-stack .stats-rewatch progress { height: 5px; margin: 5px 0; }
+.statistics-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.statistics-card h2 { font-size: 15px; line-height: 1.3; font-weight: 650; letter-spacing: -.012em; }
+.statistics-card header p, .stats-rewatch small { font-size: 12px; color: var(--secondary); }
+.statistics-card header p { margin-top: 2px; }
+.statistics-card header button { width: 44px; min-width: 44px; height: 44px; padding: 0; margin: -8px -8px 0 0; background: transparent; color: var(--secondary); }
+@media (hover: hover) {
+  .statistics-card header button:hover { color: var(--text); background: var(--surface); }
+}
+.stats-rewatch > p { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+.stats-rewatch strong { font-size: 26px; line-height: 1.15; letter-spacing: -.025em; }
+.stats-rewatch span { color: var(--secondary); font-size: 13px; overflow-wrap: anywhere; }
+.stats-rewatch progress { appearance: none; display: block; border: 0; width: 100%; height: 8px; margin: 10px 0 8px; border-radius: 4px; background: var(--button); overflow: hidden; }
+.stats-rewatch progress::-webkit-progress-bar { background: var(--button); }
+.stats-rewatch progress::-webkit-progress-value { background: var(--accent); border-radius: 4px; }
+.stats-rewatch progress::-moz-progress-bar { background: var(--accent); border-radius: 4px; }
+.stats-bars > div { display: grid; grid-template-columns: minmax(3em, 41%) minmax(10px, 1fr) minmax(2.2em, auto); gap: 8px; align-items: center; margin-top: 7px; font-size: 12.5px; }
+.stats-bars span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--secondary); }
+.stats-bars b { text-align: right; font-weight: 600; overflow-wrap: anywhere; }
+.stats-bars svg { display: block; width: 100%; height: 6px; }
+.stats-bars rect, .stats-columns rect { fill: var(--accent); }
+.stats-dots path { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.stats-dots line { stroke: var(--secondary); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.stats-column-scroll { overflow-x: auto; }
+.stats-columns { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; min-width: 100%; width: max-content; }
+.stats-columns > div { text-align: center; font-size: 11px; }
+.stats-column-mark { display: flex; height: 112px; flex-direction: column; align-items: center; justify-content: flex-end; border-bottom: 1px solid var(--strong-line); padding: 0 1px; }
+.stats-column-mark svg { display: block; width: 100%; max-width: 22px; }
+.stats-rating-histogram { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px; padding-top: 12px; container-type: inline-size; }
+.stats-count-scale { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; height: 81px; font-size: 11px; line-height: 1; color: var(--secondary); }
+.stats-rating-histogram .stats-columns { width: auto; min-width: 0; grid-template-columns: repeat(21,minmax(0,1fr)); }
+.stats-rating-histogram .stats-column-mark { height: 81px; }
+@container (max-width: 16rem) {
+  .stats-rating-histogram .stats-columns > div:nth-child(4n + 3) > span { visibility: hidden; }
+}
+@container (max-width: 22rem) {
+  .stats-rating-histogram .stats-columns > div:last-child > span { display: flex; justify-content: flex-end; }
+}
+.stats-column-mark b { font-weight: 600; margin-bottom: 2px; }
+.stats-columns > div > span { display: block; padding-top: 5px; color: var(--secondary); }
+.stats-dots { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto minmax(124px, 1fr) auto auto; gap: 3px 7px; padding-right: 4px; font-size: 11px; color: var(--secondary); }
+.stats-dots > span:first-child { grid-column: 1 / -1; margin-bottom: 3px; }
+.stats-y-ticks { display: flex; flex-direction: column; justify-content: space-between; text-align: right; }
+.stats-dots svg { width: 100%; height: 100%; min-height: 124px; border-left: 1px solid var(--strong-line); border-bottom: 1px solid var(--strong-line); overflow: visible; }
+.stats-x-ticks, .stats-x-label { grid-column: 2; }
+.stats-x-ticks { display: flex; justify-content: space-between; }
+.stats-x-label { text-align: center; }
+.stats-table-dialog[open] {
+  display:flex; flex-direction:column; gap:12px; inset:0; margin:auto; padding:16px;
+  width:min(48rem,calc(100% - 24px)); max-height:calc(88dvh / var(--app-scale)); overflow:hidden; border-radius:16px;
+}
+.stats-table-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; flex:none; }
+.stats-table-heading h2 { font-size:20px; }
+.stats-table-heading button { flex:none; }
+.stats-table-scroll { min-height:0; overflow:auto; overscroll-behavior:contain; }
+.stats-data { border-collapse:separate; border-spacing:0; width:100%; font-size:14px; line-height:1.4; }
+.stats-data th, .stats-data td { border-bottom:1px solid var(--line); padding:8px 6px; text-align:right; overflow-wrap:anywhere; }
+.stats-data th:first-child { text-align:left; }
+.stats-data th { font-weight: 500; }
+.stats-data thead th { position:sticky; top:0; background:var(--card); padding:0 6px; z-index:1; }
+.stats-data thead button {
+  color:var(--secondary); background:transparent; border:0; border-radius:4px; padding:0; min-height:44px;
+  font-size:13px; font-weight:600; white-space:nowrap; text-align:inherit;
+}
+.stats-data thead button::after { content:'↕'; display:inline-block; width:0.8em; margin-left:2px; }
+.stats-data [aria-sort=ascending] button::after { content:'▴'; }
+.stats-data [aria-sort=descending] button::after { content:'▾'; }
+.stats-data tbody tr:last-child > * { border-bottom: 0; }
+@media (width < 900px) {
+  [data-chart=rewatches] > header button, .stats-rewatch progress { display: none; }
+  @container (width < 32rem) {
+    .stats-report { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--stats-tile-gap); reading-flow: grid-rows; }
+    .stats-summary, .stats-charts, .stats-charts > .stats-rankings, .stats-rewatch-stack { display: contents; }
+    .stats-report > p, .stats-report > button, .stats-charts > div, .stats-rankings .statistics-card { grid-column: 1 / -1; }
+    .stats-rewatch-stack > [data-chart=rewatches] { grid-area: 3 / 2; padding: 12px; }
+    .stats-rewatch-stack > [data-chart=rewatches] header { margin: 0; }
+    [data-chart=rewatches] > header h2 { font-size: 12px; font-weight: 500; line-height: inherit; color: var(--secondary); }
+    .stats-rewatch > p { margin-top: 8px; }
+    .stats-rewatch strong { line-height: 1.12; }
+    .stats-rewatch span, .stats-rewatch small { display: none; }
+  }
+}
+@container (min-width: 32rem) {
+  .stats-summary { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@container (min-width: 52rem) {
+  .stats-summary { grid-template-columns: repeat(4,minmax(0,1fr)) minmax(0,1.35fr); }
+}
+@media (min-width: 900px) {
+  .statistics-screen > header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .statistics-screen .stats-scope { width: 300px; margin-top: 0; }
+  .statistics-screen { --stats-tile-gap: 12px; }
+  @container (min-width: 30rem) {
+    .stats-charts > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats-rankings:has([data-chart=hours-by-show]) > [data-chart=plays-by-show] { grid-column: 1 / -1; }
+    .stats-rewatch-stack:not(:has([data-chart=rewatched-shows])) { align-self: start; }
+  }
+  @container (min-width: 47rem) {
+    .stats-charts > div { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stats-rankings:has([data-chart=hours-by-show]) > [data-chart=plays-by-show] { grid-column: auto; }
+  }
+}

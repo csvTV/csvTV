@@ -1,0 +1,55 @@
+.season-screen { min-width: 0; }
+.repair-notice { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  margin-block:16px; padding:12px 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+.repair-moves { margin:12px 0; padding-inline-start:22px; }
+.repair-moves li { padding-block:6px; overflow-wrap:anywhere; }
+.repair-moves li p { color:var(--secondary); }
+.season-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.season-heading h1 { overflow-wrap:anywhere; flex:1; min-width:min(120px,100%); }
+.season-list-title { font-size:20px; line-height:1.25; letter-spacing:-.025em; }
+.season-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.season-actions:empty { display:none; }
+.season-mark { gap:7px; }
+.season-summary,.episode-copy small,.episode-number,.season-rewatch-label span { color:var(--secondary); }
+.season-summary,.season-status { margin-top:8px; }
+.season-status { padding:8px 0; }
+.season-summary,.season-rewatch-label,.episode-number,.episode-count { font-variant-numeric:tabular-nums; }
+.season-rewatch { background:var(--card); border-radius:10px; padding:13px 16px; margin-top:16px; }
+.season-rewatch-label { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+.season-rewatch-label strong,.watch-sheet-context { font-size:12px; text-transform:uppercase; letter-spacing:.07em; }
+.season-rewatch progress { display:block; margin-top:10px; width:100%; height:5px; border:0; border-radius:4px; overflow:hidden; appearance:none; background:var(--button); accent-color:var(--accent); }
+.season-rewatch progress::-webkit-progress-bar { background:var(--button); }
+.season-rewatch progress::-webkit-progress-value { background:var(--accent); }
+.season-rewatch progress::-moz-progress-bar { background:var(--accent); }
+.season-list-title { margin:24px 0 2px; }
+.season-episodes { list-style:none; padding:0; margin:8px 0 0; }
+.season-episodes li + li { border-top:1px solid var(--line); }
+.episode-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; }
+.season-episode { display:flex; align-items:center; flex-wrap:wrap; gap:2px 8px; width:100%; min-height:50px;
+  padding:8px 3px; }
+.episode-number { min-width:20px; max-width:100%; overflow-wrap:anywhere; font-size:13px; font-weight:400; }
+.season-episode .imdb-score { color:var(--secondary); font-weight:500; }
+.episode-copy { flex:1 1 64px; min-width:0; display:flex; align-items:baseline; flex-wrap:wrap; gap:2px 8px; overflow-wrap:anywhere; }
+.episode-name { font-weight:500; }
+.episode-copy small { flex-basis:100%; font-weight:400; font-size:12px; }
+.episode-controls { display:flex; align-items:center; }
+.episode-controls button { display:grid; place-items:center; min-width:44px; min-height:44px; padding:0; background:transparent; }
+.episode-controls button:disabled { background:transparent; }
+.episode-step:enabled:hover .season-step-icon, .episode-count-button:enabled:hover .episode-count { background:var(--button); }
+.episode-count-button { max-width:7ch; }
+.episode-count { justify-self:center; display:inline-grid; place-items:center; font-size:13px; font-weight:600; line-height:1;
+  border-radius:999px; min-width:36px; max-width:100%; min-height:24px; overflow-wrap:anywhere; padding:2px 9px; background:var(--surface); }
+.episode-count.empty { border:1px solid var(--secondary); background:transparent; }
+.episode-count.rewatched { background:var(--accent); color:white; }
+.watch-sheet { overflow-wrap:anywhere; }
+.watch-sheet-context,.watch-sheet-description,.watch-sheet-action small { color:var(--secondary); }
+.watch-sheet-context { margin-bottom:5px; }
+.watch-sheet-description { margin-bottom:12px; }
+.watch-sheet-action { display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; width:100%; min-height:52px;
+  background:transparent; border-top:1px solid var(--line); border-radius:0; padding:10px 2px; }
+.watch-sheet-action small { font-weight:400; font-size:13px; }
+.watch-sheet-cancel { margin-top:24px; width:100%; }
+@media(max-width:899px) {
+  .season-heading { align-items:start; }
+  .season-heading h1 { flex-basis:100%; }
+}
